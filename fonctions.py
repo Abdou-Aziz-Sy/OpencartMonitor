@@ -1,19 +1,10 @@
 import pymysql
 
-def connection_db():
-    try:
-        connection = pymysql.connect(host='localhost',
-                                     user='root',
-                                     password='',
-                                     db='opencartdb',
-                                     cursorclass=pymysql.cursors.DictCursor)
-        return connection
-    except Exception as e:
-        print("Erreur lors de la connexion à la base de données:", e)
-        return None
-
 def get_connected_users_count():
-    connection = connection_db()
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password='',
+                                 db='opencartdb',)
     cursor = connection.cursor()
 
     try:
@@ -25,13 +16,16 @@ def get_connected_users_count():
         return None
     finally:
         connection.close()
-
+# Fonction pour récupérer le nombre de transactions en cours
 def get_active_transactions_count():
-    connection = connection_db()
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password='',
+                                 db='opencartdb')
     cursor = connection.cursor()
 
     try:
-        cursor.execute("SELECT COUNT(*) FROM oc_order WHERE order_status_id IN (2, 3, 5)")
+        cursor.execute("SELECT COUNT(*) FROM oc_order WHERE order_status_id IN (0, 7)")
         count = cursor.fetchone()[0]
         return count
     except Exception as e:
@@ -40,12 +34,16 @@ def get_active_transactions_count():
     finally:
         connection.close()
 
+# Fonction pour bloquer les transactions/ventes
 def block_transactions():
-    connection = connection_db()
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password='',
+                                 db='opencartdb')
     cursor = connection.cursor()
 
     try:
-        cursor.execute("UPDATE oc_order SET order_status_id = 0")
+        cursor.execute("UPDATE oc_order SET order_status_id = 0 WHERE order_status_id IN (2, 3, 5)")
         connection.commit()
         print("Transactions bloquées avec succès.")
     except Exception as e:
@@ -53,4 +51,5 @@ def block_transactions():
         print("Erreur lors du blocage des transactions:", e)
     finally:
         connection.close()
+
 

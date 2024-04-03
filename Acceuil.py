@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import matplotlib.pyplot as plt  # Importez la bibliothèque pour créer des graphiques
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from fonctions import get_connected_users_count
+from fonctions import get_active_transactions_count, block_transactions, get_connected_users_count
 
 class OpenCartMonitorApp:
     def __init__(self, root):
@@ -28,7 +26,7 @@ class OpenCartMonitorApp:
         self.create_vertical_menu()
 
     def create_vertical_menu(self):
-        options = ["People Online", "Total Orders", "Total Sales"]
+        options = ["People Online", "Total Orders", "Active Transactions", ]
         style = ttk.Style()
         style.configure("Menu.TButton", background="#333741", foreground="#333741")
 
@@ -44,18 +42,38 @@ class OpenCartMonitorApp:
         elif option == "Total Orders":
             total_orders = self.get_total_orders()
             self.display_results(total_orders)
-        elif option == "Total Sales":
-            total_sales = self.get_total_sales()
-            self.display_results(total_sales)
-
+        elif option == "Active Transactions":
+            active_transactions = self.get_active_transactions()
+            self.display_results(active_transactions)
+      
     def show_people_online(self):
-        count = get_connected_users_count()  # Utiliser la fonction pour obtenir le nombre d'utilisateurs en ligne
+        count = get_connected_users_count()
         if count is not None:
             result_text = f"Nombre d'utilisateurs en ligne : {count}"
             result_label = tk.Label(self.content_frame, text=result_text, bg="white", font=("Arial", 12))
             result_label.pack(pady=10)
         else:
             messagebox.showerror("Erreur", "Impossible de récupérer le nombre d'utilisateurs en ligne.")
+
+    def get_total_orders(self):
+        total_orders = {"total_orders": 1000}  # Placeholder for demonstration purposes
+        return total_orders
+
+    def get_active_transactions(self):
+        active_transactions_count = get_active_transactions_count()
+        if active_transactions_count is not None:
+            return {"active_transactions_count": active_transactions_count}
+        else:
+            return {"active_transactions_count": "Erreur lors de la récupération des transactions en cours"}
+
+
+
+    def display_results(self, data):
+        result_text = ""
+        for key, value in data.items():
+            result_text += f"{key}: {value}\n"
+        result_label = tk.Label(self.content_frame, text=result_text, bg="white", font=("Arial", 12))
+        result_label.pack(pady=10)
 
 if __name__ == "__main__":
     root = tk.Tk()
