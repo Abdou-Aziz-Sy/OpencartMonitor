@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from Acceuil import OpenCartMonitorApp
-import mysql.connector
+import mysql
 
 class LoginPage(tk.Toplevel):
     def __init__(self, parent):

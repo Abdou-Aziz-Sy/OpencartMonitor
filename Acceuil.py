@@ -1,5 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+import matplotlib.pyplot as plt  # Importez la bibliothèque pour créer des graphiques
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from fonctions import get_connected_users_count
 
 class OpenCartMonitorApp:
     def __init__(self, root):
@@ -36,8 +40,7 @@ class OpenCartMonitorApp:
     def show_functionality(self, option):
         self.functionality_label.config(text=f"Affichage des {option}")
         if option == "People Online":
-            online_users = self.get_online_users()
-            self.display_results(online_users)
+            self.show_people_online()
         elif option == "Total Orders":
             total_orders = self.get_total_orders()
             self.display_results(total_orders)
@@ -45,19 +48,16 @@ class OpenCartMonitorApp:
             total_sales = self.get_total_sales()
             self.display_results(total_sales)
 
-    def get_online_users(self):
-        return {"online_users": 50}
+    def show_people_online(self):
+        count = get_connected_users_count()  # Utiliser la fonction pour obtenir le nombre d'utilisateurs en ligne
+        if count is not None:
+            result_text = f"Nombre d'utilisateurs en ligne : {count}"
+            result_label = tk.Label(self.content_frame, text=result_text, bg="white", font=("Arial", 12))
+            result_label.pack(pady=10)
+        else:
+            messagebox.showerror("Erreur", "Impossible de récupérer le nombre d'utilisateurs en ligne.")
 
-    def get_total_orders(self):
-        return {"total_orders": 1000}
-
-    def get_total_sales(self):
-        return {"total_sales": "$50000"}
-
-    def display_results(self, data):
-        result_text = ""
-        for key, value in data.items():
-            
-            result_text += f"{key}: {value}\n"
-        result_label = tk.Label(self.content_frame, text=result_text, bg="white", font=("Arial", 12))
-        result_label.pack(pady=10)
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = OpenCartMonitorApp(root)
+    root.mainloop()

@@ -5,7 +5,7 @@ def connection_db():
         connection = pymysql.connect(host='localhost',
                                      user='root',
                                      password='',
-                                     db='opencart',
+                                     db='opencartdb',
                                      cursorclass=pymysql.cursors.DictCursor)
         return connection
     except Exception as e:
